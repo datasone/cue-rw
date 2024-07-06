@@ -1,0 +1,17 @@
+[package]
+name = "cue-rw"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0 OR MIT"
+description = "A library supports both reading and writing cue files"
+documentation = "https://docs.rs/cue-rw"
+repository = "https://github.com/datasone/cue-rw"
+readme = "README.md"
+keywords = ["audio", "cue", "cuesheet"]
+categories = ["multimedia::audio"]
+
+[dependencies]
+thiserror = "1.0.61"
+itertools = "0.13.0"
+num-rational = "0.4.2"
+bitflags = "2.6.0"
