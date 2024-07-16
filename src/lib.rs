@@ -360,7 +360,7 @@ pub struct CUETrack {
     /// The title of the track
     pub title:      String,
     /// The performer of the track
-    pub performer:  String,
+    pub performer:  Option<String>,
     /// The sub code flags of the track
     pub flags:      Option<TrackFlags>,
     /// The ISRC of the track
@@ -411,7 +411,8 @@ impl TryFrom<&str> for CUETrack {
                         line_split
                             .next()
                             .ok_or_else(|| CUEParseError::MissingValue(line.to_owned()))?
-                            .trim_surrounding('"'),
+                            .trim_surrounding('"')
+                            .to_owned(),
                     )
                 }
                 "FLAGS" => {
@@ -479,9 +480,6 @@ impl TryFrom<&str> for CUETrack {
         let title = title
             .map(|s| s.to_owned())
             .ok_or_else(|| CUEParseError::MissingEntry("title", value.to_owned()))?;
-        let performer = performer
-            .map(|s| s.to_owned())
-            .ok_or_else(|| CUEParseError::MissingEntry("performer", value.to_owned()))?;
 
         Ok(Self {
             title,
@@ -504,7 +502,10 @@ impl Display for CUETrack {
             .as_ref()
             .map(|flags| format!("    FLAGS {}", flags));
         let title_str = format!(r#"    TITLE "{}""#, self.title);
-        let performer_str = format!(r#"    PERFORMER "{}""#, self.performer);
+        let performer_str = self
+            .performer
+            .as_ref()
+            .map(|performer| format!(r#"    PERFORMER "{}""#, performer));
         let isrc_str = self.isrc.as_ref().map(|isrc| format!("    ISRC {}", isrc));
         let pregap_str = self
             .pre_gap
@@ -529,7 +530,7 @@ impl Display for CUETrack {
         let str = [
             flags_str,
             Some(title_str),
-            Some(performer_str),
+            performer_str,
             pregap_str,
             isrc_str,
             Some(indices_str),
