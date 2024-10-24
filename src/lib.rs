@@ -47,7 +47,7 @@ pub enum CUEParseError {
 pub type FileID = usize;
 
 /// Main struct for representing a CUE file
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct CUEFile {
     /// The file names referenced by the CUE file
     pub files:      Vec<String>,
@@ -66,6 +66,15 @@ pub struct CUEFile {
     pub tracks:     Vec<(FileID, CUETrack)>,
     /// REM comment lines
     pub comments:   Vec<String>,
+}
+
+impl CUEFile {
+    /// Construct a new empty `CUEFile`
+    pub fn new() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
 }
 
 impl TryFrom<&str> for CUEFile {
@@ -355,7 +364,7 @@ impl Display for TrackFlags {
 }
 
 /// struct describing a CUE track
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct CUETrack {
     /// The title of the track
     pub title:      String,
@@ -375,6 +384,15 @@ pub struct CUETrack {
     pub indices:    Vec<(u8, CUETimeStamp)>,
     /// REM comments of the track
     pub comments:   Vec<String>,
+}
+
+impl CUETrack {
+    /// Construct a new empty `CUETrack`
+    pub fn new() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
 }
 
 impl TryFrom<&str> for CUETrack {
@@ -550,6 +568,17 @@ pub struct CUETimeStamp {
     minutes:   u8,
     seconds:   u8,
     fractions: u8,
+}
+
+impl CUETimeStamp {
+    /// Construct a new `CUETimeStamp`
+    pub fn new(minutes: u8, seconds: u8, fractions: u8) -> Self {
+        Self {
+            minutes,
+            seconds,
+            fractions,
+        }
+    }
 }
 
 impl TryFrom<&str> for CUETimeStamp {
